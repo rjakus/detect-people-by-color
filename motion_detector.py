@@ -9,12 +9,15 @@ import imutils
 import time
 import cv2
 from matplotlib import pyplot as plt
+from imutils.object_detection import non_max_suppression
+import numpy as np
+from pyimagesearch.tempimage import TempImage
 
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-v", "--video", help="path to the video file")
-ap.add_argument("-a", "--min-area", type=int, default=500, help="minimum area size")
+ap.add_argument("-a", "--min-area", type=int, default=1500, help="minimum area size")
 args = vars(ap.parse_args())
 
 # if the video argument is None, then we are reading from webcam
@@ -28,16 +31,23 @@ else:
 
 # initialize the first frame in the video stream
 firstFrame = None
-#firstcoloredFrame=camera.read()
-#cv2.imshow(firstcoloredFrame)
+secondFrame = None
+
+
+between=False
+photocount=0
+
+
 # loop over the frames of the video
 while True:
+    areas = [] 
     # grab the current frame and initialize the occupied/unoccupied
     # text
     (grabbed, frame) = camera.read()
     (grabbed, frame_original) = camera.read()
     text = "Unoccupied"
-
+    
+    
 	# if the frame could not be grabbed, then we have reached the end
 # of the video
     if not grabbed:
@@ -45,6 +55,9 @@ while True:
     
     	# resize the frame, convert it to grayscale, and blur it
     frame = imutils.resize(frame, width=500)
+    
+    #DRAW A LINE, RANGE OD INTEREST (roi)
+    img = cv2.line(frame,(250,500),(250,0),(255,0,0),2)
     ########
     
     frame_original=imutils.resize(frame_original, width=500)
@@ -52,14 +65,24 @@ while True:
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray, (21, 21), 0)
     
+    
+    if secondFrame is None:
+        secondFrame = gray
+      #  cv2.imshow('drugi frejm', secondFrame)        
+        continue
     	# if the first frame is None, initialize it
     if firstFrame is None:
        # firstFrame2=frame
-        firstFrame=frame
+    
+        #firstFrame=frame
      #   cv2.imshow('prvi frejm', firstFrame2)        
         firstFrame = gray
+        cv2.imshow('prvi frejm', firstFrame)        
         continue
     
+       
+    
+    ##########
     	# compute the absolute difference between the current frame and
     	# first frame
     frame_color=frame_original
@@ -70,30 +93,72 @@ while True:
     	# dilate the thresholded image to fill in holes, then find contours
     	# on thresholded image
     thresh = cv2.dilate(thresh, None, iterations=2)
-    (cnts, _) = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
-     cv2.CHAIN_APPROX_SIMPLE)
+    cnts,hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     
+        # finding contour with maximum area and store it as best_cnt
+    max_area = 0
+    for cnt in cnts:
+        area = cv2.contourArea(cnt)
+        
+        if area > max_area:
+            max_area = area
+            best_cnt = cnt
+    
+    if max_area != 0:
+    # finding centroids of best_cnt and draw a circle there
+        M = cv2.moments(best_cnt)
+        cx,cy = int(M['m10']/M['m00']), int(M['m01']/M['m00'])
+        cv2.circle(frame,(cx,cy),5,255,-1)
+        
+        #compare x value of centroid and ROI, if they are the same take screenshoot
+    
+        if cx>245 and cx<250:
+            between= True
+        if between== True and cx <245:
+                print 'screenshot s desna na lijevo'
+                
+                cv2.imwrite("/home/lenovo/pus_projekt/basic-motion-detection//basic-motion-detection/images/people_at_"+datetime.datetime.now().strftime("%Y%m%d_%H%M%S")+".jpg",frame)
+                
+                between=False
+                
+        if cx>245 and cx<250:
+            between= True
+        if between == True and cx >250:
+                print 'screenshot s lijeva na desno'
+                
+                cv2.imwrite("/home/lenovo/pus_projekt/basic-motion-detection//basic-motion-detection/images/people_at_"+datetime.datetime.now().strftime("%Y%m%d_%H%M%S")+".jpg",frame)
+                
+                between=False
+
+#################################################
     	# loop over the contours
+    #oginalni kod
     for c in cnts:
     		# if the contour is too small, ignore it
         if cv2.contourArea(c) < args["min_area"]:
-    		continue
+            continue
     
     		# compute the bounding box for the contour, draw it on the frame,
     		# and update the text
+        ar=cv2.contourArea(c)
+        areas.append(ar)
+        
         (x, y, w, h) = cv2.boundingRect(c)
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
         text = "Occupied"
-    
+        
+
     	# draw the text and timestamp on the frame
     cv2.putText(frame, "Room Status: {}".format(text), (10, 20),
     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
     cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"),
 	(10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
  
-    ##########################
-    masked_image = cv2.bitwise_and(frame_color, frame_color, mask = thresh)
     
+ 
+
+
+    masked_image = cv2.bitwise_and(frame_color, frame_color, mask = thresh)
     hist_mask = cv2.calcHist([frame_color],[0], thresh ,[256],[0,256])
    # plt.plot(hist_mask)
  ################################
@@ -105,8 +170,6 @@ while True:
     #cv2.imshow("Frame Delta", frameDelta)
     ######################
     
-    #plt.subplot(224), plt.plot(hist_mask)    
-    #plt.show()
     
     #########3
     
