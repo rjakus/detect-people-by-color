@@ -11,7 +11,9 @@ import cv2
 from matplotlib import pyplot as plt
 from imutils.object_detection import non_max_suppression
 import numpy as np
-from pyimagesearch.tempimage import TempImage
+
+import compare_histogram
+
 
 
 # construct the argument parser and parse the arguments
@@ -77,7 +79,7 @@ while True:
         #firstFrame=frame
      #   cv2.imshow('prvi frejm', firstFrame2)        
         firstFrame = gray
-        cv2.imshow('prvi frejm', firstFrame)        
+        #cv2.imshow('prvi frejm', firstFrame)        
         continue
     
        
@@ -116,17 +118,18 @@ while True:
             between= True
         if between== True and cx <245:
                 print 'screenshot s desna na lijevo'
-                
-                cv2.imwrite("/home/lenovo/pus_projekt/basic-motion-detection//basic-motion-detection/images/people_at_"+datetime.datetime.now().strftime("%Y%m%d_%H%M%S")+".jpg",frame)
-                
+                time=datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                cv2.imwrite("/home/lenovo/pus_projekt/basic-motion-detection//basic-motion-detection/images/people_at_"+time+".jpg",frame)
+                compare_histogram.compare_histograms(time)
                 between=False
                 
         if cx>245 and cx<250:
             between= True
         if between == True and cx >250:
                 print 'screenshot s lijeva na desno'
-                
-                cv2.imwrite("/home/lenovo/pus_projekt/basic-motion-detection//basic-motion-detection/images/people_at_"+datetime.datetime.now().strftime("%Y%m%d_%H%M%S")+".jpg",frame)
+                time=datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                cv2.imwrite("/home/lenovo/pus_projekt/basic-motion-detection//basic-motion-detection/images/people_at_"+time+".jpg",frame)
+                compare_histogram.compare_histograms(time)
                 
                 between=False
 
@@ -166,7 +169,7 @@ while True:
     	# show the frame and record if the user presses a key
     cv2.imshow("Security Feed", frame)
     cv2.imshow("Color", masked_image)
-    cv2.imshow("Thresh", thresh)
+   # cv2.imshow("Thresh", thresh)
     #cv2.imshow("Frame Delta", frameDelta)
     ######################
     
