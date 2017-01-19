@@ -21,6 +21,7 @@ images = {}
 
 def compare_histograms(time):
     # loop over the image paths
+    plt.ioff()
     for imagePath in glob.glob("images" + "/*.jpg"):
     # extract the image filename (assumed to be unique) and
     # load the image, updating the images dictionary
@@ -36,13 +37,21 @@ def compare_histograms(time):
         hist = cv2.normalize(hist).flatten()
         
         index[filename] = hist
-        
+    
+    #ako je samo jedna slika u bazi vrati se u program, nema se šta uspoređivat    
+    if len(index.items())==1:
+        return
     
     # METHOD #1: UTILIZING OPENCV
     # initialize OpenCV methods for histogram comparison
     #OPENCV_METHODS = (("Correlation", cv2.cv.CV_COMP_CORREL))
-    	
-    methodName="Correlation"
+    OPENCV_METHODS = (
+	("Correlation", cv2.cv.CV_COMP_CORREL),
+	("Chi-Squared", cv2.cv.CV_COMP_CHISQR),
+	("Intersection", cv2.cv.CV_COMP_INTERSECT), 
+	("Hellinger", cv2.cv.CV_COMP_BHATTACHARYYA))
+	
+    methodName="Intersection"
     # loop over the comparison methods
     
     # initialize the results dictionary and the sort
@@ -55,9 +64,11 @@ def compare_histograms(time):
     for (k, hist) in index.items():
         # compute the distance between the two histograms
         # using the method and update the results dictionary
-        d = cv2.compareHist(index["people_at_"+time+".jpg"], hist, 0)
+        #if k==time+".jpg":
+        #    continue
+        d = cv2.compareHist(index[time+".jpg"], hist, cv2.cv.CV_COMP_INTERSECT)
         results[k] = d
-        plt.plot(hist)
+      #  plt.plot(hist)
     
     
     # sort the results
@@ -70,8 +81,8 @@ def compare_histograms(time):
     #plt.axis("off")
     
     # initialize the results figure
-  
-    
+    #plt.ion()
+  #  fig=plt.figure(figsize=(8, 6))
     fig = plt.figure("Results: %s, %s" % (methodName, time))
     fig.suptitle(methodName, fontsize = 20)
     
@@ -79,11 +90,16 @@ def compare_histograms(time):
     # loop over the results
     for (i, (v, k)) in enumerate(results):
         # show the result
-        if v>0.7:
-            ax = fig.add_subplot(1, len(images), i + 1)
+        #if v>0.7:
+        
+        
+        ax = fig.add_subplot(1, len(images), i + 1)
+        if k==time+".jpg":
+            ax.set_title("detektiran auto")
+        else:
             ax.set_title("%s: %.2f" % (k, v))
-            plt.imshow(images[k])
-            plt.axis("off")
+        plt.imshow(images[k])
+        plt.axis("off")
     
     # show the OpenCV methods
     plt.ion()
