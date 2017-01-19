@@ -110,25 +110,27 @@ while True:
     # finding centroids of best_cnt and draw a circle there
         M = cv2.moments(best_cnt)
         cx,cy = int(M['m10']/M['m00']), int(M['m01']/M['m00'])
+        #print cx
         cv2.circle(frame,(cx,cy),5,255,-1)
         
         #compare x value of centroid and ROI, if they are the same take screenshoot
     
-        if cx>245 and cx<250:
+        if cx>242 and cx<253:
             between= True
-        if between== True and cx <245:
+        if between== True and cx <242:
                 print 'screenshot s desna na lijevo'
-                time=datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-                cv2.imwrite("/home/lenovo/pus_projekt/basic-motion-detection//basic-motion-detection/images/people_at_"+time+".jpg",frame)
+                #time=datetime.datetime.now().strftime("%Y%m%d_%H:%M:%S")
+                time=datetime.datetime.now().strftime("%H:%M:%S")
+                cv2.imwrite("/home/lenovo/Documents/pus_projekt/detect-people-by-color-master/images/"+time+".jpg",masked_image)
                 compare_histogram.compare_histograms(time)
                 between=False
                 
-        if cx>245 and cx<250:
+        if cx>242 and cx<254:
             between= True
-        if between == True and cx >250:
+        if between == True and cx >253:
                 print 'screenshot s lijeva na desno'
-                time=datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-                cv2.imwrite("/home/lenovo/pus_projekt/basic-motion-detection//basic-motion-detection/images/people_at_"+time+".jpg",frame)
+                time=datetime.datetime.now().strftime("%H:%M:%S")
+                cv2.imwrite("/home/lenovo/Documents/pus_projekt/detect-people-by-color-master/images/"+time+".jpg",masked_image)
                 compare_histogram.compare_histograms(time)
                 
                 between=False
@@ -176,7 +178,7 @@ while True:
     
     #########3
     
-    key = cv2.waitKey(1) & 0xFF
+    key = cv2.waitKey(30) & 0xFF
     
     	# if the `q` key is pressed, break from the lop
     if key == ord("q"):
