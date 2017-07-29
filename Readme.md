@@ -10,3 +10,6 @@ Uz pomoć OpenCV knjiznice i Pythona riješiti navedene probleme.
 - [ ] Link za testni video https://drive.google.com/open?id=0B5UlBgZbprwsaXpFT3BpLXgxUGM
 
 Copyright (c) 2016 Rikardo Jakus & Enzo Licul
+
+**************************************
+treba napraviti: da IZREŽE blob koji se je pomakao, a ne "obojat" pozdainu u crno, jer kad uspoređuje cijele slike, pošto ima puno crne boje, sve se dosta podudaraju
