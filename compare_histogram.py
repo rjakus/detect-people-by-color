@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Nov  7 15:53:18 2016
-
-@author: lenovo
-"""
-
 # USAGE
 # python compare.py --dataset images
 
@@ -38,7 +31,7 @@ def compare_histograms(time):
         
         index[filename] = hist
     
-    #ako je samo jedna slika u bazi vrati se u program, nema se šta uspoređivat    
+    # ako je samo jedna slika u bazi vrati se u program, nema se sta usporedivat    
     if len(index.items())==1:
         return
     
@@ -73,7 +66,7 @@ def compare_histograms(time):
     
     # sort the results
     results = sorted([(v, k) for (k, v) in results.items()], reverse = reverse)
-    
+    print results
     # show the query image
     #fig = plt.figure("Query")
     #ax = fig.add_subplot(1, 1, 1)
