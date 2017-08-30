@@ -1,6 +1,6 @@
 # USAGE
 # python motion_detector.py
-# python motion_detector.py --video videos/example_01.mp4
+# python motion_detector.py --video videos/video_test.mp4
 
 # import the necessary packages
 import argparse
@@ -12,7 +12,7 @@ from matplotlib import pyplot as plt
 from imutils.object_detection import non_max_suppression
 import numpy as np
 import compare_histogram
-import image_similarity
+#import image_similarity
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -97,9 +97,9 @@ while True:
                 for cnt in cnts:
                     (x, y, w, h) = cv2.boundingRect(cnt)
                     img = masked_image[y:y+h, x:x+w]
-                cv2.imwrite("./images/"+time+".jpg",img)
+                cv2.imwrite("./images/"+time+".png",img)
                 compare_histogram.compare_histograms(time)
-                #image_similarity.compareImages(time+".jpg")
+               # image_similarity.compareImages(time+".jpg")
                 between=False
                 
         if cx>242 and cx<254:
@@ -110,9 +110,9 @@ while True:
                 for cnt in cnts:
                     (x, y, w, h) = cv2.boundingRect(cnt)
                     img = masked_image[y:y+h, x:x+w]
-                cv2.imwrite("./images/"+time+".jpg",img)
+                cv2.imwrite("./images/"+time+".png",img)
                 compare_histogram.compare_histograms(time)
-                #image_similarity.compareImages(time+".jpg")
+            #    image_similarity.compareImages(time+".jpg")
                 between=False
     # loop over the contours
     for c in cnts:
@@ -149,5 +149,5 @@ while True:
         break
 
 # cleanup the camera and close any open windows
-camera.release()
-cv2.destroyAllWindows()
+#camera.release()
+#cv2.destroyAllWindows()

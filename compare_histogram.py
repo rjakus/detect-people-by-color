@@ -13,9 +13,9 @@ index = {}
 images = {}
 
 def compare_histograms(time):
-    # loop over the image paths
     plt.ioff()
-    for imagePath in glob.glob("images" + "/*.jpg"):
+    # loop over the image paths
+    for imagePath in glob.glob("images" + "/*.png"):
     # extract the image filename (assumed to be unique) and
     # load the image, updating the images dictionary
         filename = imagePath[imagePath.rfind("/") + 1:]
@@ -59,40 +59,47 @@ def compare_histograms(time):
         # using the method and update the results dictionary
         #if k==time+".jpg":
         #    continue
-        d = cv2.compareHist(index[time+".jpg"], hist, cv2.cv.CV_COMP_INTERSECT)
+        d = cv2.compareHist(index[time+".png"], hist, cv2.cv.CV_COMP_INTERSECT)
         results[k] = d
-      #  plt.plot(hist)
+        #plt.plot(hist)
     
     
     # sort the results
     results = sorted([(v, k) for (k, v) in results.items()], reverse = reverse)
     print results
-    # show the query image
-    #fig = plt.figure("Query")
-    #ax = fig.add_subplot(1, 1, 1)
-    #ax.imshow(images["doge.png"])
-    #plt.axis("off")
-    
-    # initialize the results figure
-    #plt.ion()
-  #  fig=plt.figure(figsize=(8, 6))
+
     fig = plt.figure("Results: %s, %s" % (methodName, time))
     fig.suptitle(methodName, fontsize = 20)
     
-    
+    bestcorr=0
+
     # loop over the results
     for (i, (v, k)) in enumerate(results):
         # show the result
-        #if v>0.7:
+        #if v>1.5:
+
+        if k==time+".png":
+            continue
         
-        
-        ax = fig.add_subplot(1, len(images), i + 1)
-        if k==time+".jpg":
-            ax.set_title("detektiran auto")
-        else:
-            ax.set_title("%s: %.2f" % (k, v))
-        plt.imshow(images[k])
-        plt.axis("off")
+        if bestcorr<v:
+            bestcorr=v
+            bestcorrpic=k
+            
+    
+    fig = plt.figure("Results: %s, Correlation: %f" % (methodName, bestcorr))
+    fig.suptitle(methodName, fontsize = 20)
+            
+   # print "\n najbolja corr "
+   # print bestcorr
+
+    actualimage=cv2.imread("images/" +time+".png")
+    
+    ax = fig.add_subplot(1, 2, 1)
+    plt.imshow(cv2.cvtColor(actualimage, cv2.COLOR_BGR2RGB))
+       
+    ax = fig.add_subplot(1, 2, 2)
+    plt.imshow(images[bestcorrpic])
+    plt.axis("off")
     
     # show the OpenCV methods
     plt.ion()
