@@ -1,0 +1,47 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+M	../motion_detector.py	/^        M = cv2.moments(best_cnt)$/;"	kind:variable	line:84
+ap	../motion_detector.py	/^ap = argparse.ArgumentParser()$/;"	kind:variable	line:18
+ar	../motion_detector.py	/^        ar=cv2.contourArea(c)$/;"	kind:variable	line:124
+area	../motion_detector.py	/^        area = cv2.contourArea(cnt)$/;"	kind:variable	line:76
+areas	../motion_detector.py	/^    areas = [] $/;"	kind:variable	line:38
+args	../motion_detector.py	/^args = vars(ap.parse_args())$/;"	kind:variable	line:21
+best_cnt	../motion_detector.py	/^            best_cnt = cnt$/;"	kind:variable	line:80
+between	../motion_detector.py	/^                between=False$/;"	kind:variable	line:103
+between	../motion_detector.py	/^                between=False$/;"	kind:variable	line:116
+between	../motion_detector.py	/^            between= True$/;"	kind:variable	line:106
+between	../motion_detector.py	/^            between= True$/;"	kind:variable	line:92
+between	../motion_detector.py	/^between = False$/;"	kind:variable	line:34
+camera	../motion_detector.py	/^    camera = cv2.VideoCapture(0)$/;"	kind:variable	line:25
+camera	../motion_detector.py	/^    camera = cv2.VideoCapture(args["video"])$/;"	kind:variable	line:30
+compare_histogram.py	../compare_histogram.py	1;"	kind:file	line:1
+compare_histograms	../compare_histogram.py	/^def compare_histograms(time):$/;"	kind:function	line:15
+firstFrame	../motion_detector.py	/^        firstFrame = gray$/;"	kind:variable	line:58
+firstFrame	../motion_detector.py	/^firstFrame = None$/;"	kind:variable	line:33
+frame	../motion_detector.py	/^    frame = imutils.resize(frame, width = 500)$/;"	kind:variable	line:50
+frameDelta	../motion_detector.py	/^    frameDelta = cv2.absdiff(firstFrame, gray)$/;"	kind:variable	line:65
+frame_color	../motion_detector.py	/^    frame_color = frame_original$/;"	kind:variable	line:61
+frame_original	../motion_detector.py	/^    frame_original=imutils.resize(frame_original, width = 500)$/;"	kind:variable	line:52
+gray	../motion_detector.py	/^    gray = cv2.GaussianBlur(gray, (21, 21), 0)$/;"	kind:variable	line:54
+gray	../motion_detector.py	/^    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)$/;"	kind:variable	line:53
+hist_mask	../motion_detector.py	/^    hist_mask = cv2.calcHist([frame_color],[0], thresh ,[256],[0,256])$/;"	kind:variable	line:138
+images	../compare_histogram.py	/^images = {}$/;"	kind:variable	line:13
+img	../motion_detector.py	/^                    img = masked_image[y:y+h, x:x+w]$/;"	kind:variable	line:112
+img	../motion_detector.py	/^                    img = masked_image[y:y+h, x:x+w]$/;"	kind:variable	line:99
+img	../motion_detector.py	/^    img = cv2.line(frame,(250,500),(250,0),(255,0,0),2)$/;"	kind:variable	line:51
+index	../compare_histogram.py	/^index = {}$/;"	kind:variable	line:12
+key	../motion_detector.py	/^    key = cv2.waitKey(30) & 0xFF$/;"	kind:variable	line:146
+masked_image	../motion_detector.py	/^    masked_image = cv2.bitwise_and(frame_color, frame_color, mask = thresh)$/;"	kind:variable	line:137
+max_area	../motion_detector.py	/^            max_area = area$/;"	kind:variable	line:79
+max_area	../motion_detector.py	/^    max_area = 0$/;"	kind:variable	line:74
+motion_detector.py	../motion_detector.py	1;"	kind:file	line:1
+text	../motion_detector.py	/^        text = "Occupied"$/;"	kind:variable	line:129
+text	../motion_detector.py	/^    text = "Unoccupied"       $/;"	kind:variable	line:42
+thresh	../motion_detector.py	/^    thresh = cv2.dilate(thresh, None, iterations=2)$/;"	kind:variable	line:70
+thresh	../motion_detector.py	/^    thresh = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]$/;"	kind:variable	line:66
+time	../motion_detector.py	/^                time=datetime.datetime.now().strftime("%H:%M:%S")$/;"	kind:variable	line:109
+time	../motion_detector.py	/^                time=datetime.datetime.now().strftime("%H:%M:%S")$/;"	kind:variable	line:96

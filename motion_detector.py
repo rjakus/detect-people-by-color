@@ -97,7 +97,7 @@ while True:
                 for cnt in cnts:
                     (x, y, w, h) = cv2.boundingRect(cnt)
                     img = masked_image[y:y+h, x:x+w]
-                cv2.imwrite("./images/"+time+".png",img)
+                cv2.imwrite("./images/exit/"+time+".png",img)
                 compare_histogram.compare_histograms(time)
                # image_similarity.compareImages(time+".jpg")
                 between=False
@@ -110,8 +110,8 @@ while True:
                 for cnt in cnts:
                     (x, y, w, h) = cv2.boundingRect(cnt)
                     img = masked_image[y:y+h, x:x+w]
-                cv2.imwrite("./images/"+time+".png",img)
-                compare_histogram.compare_histograms(time)
+                cv2.imwrite("./images/enter/"+time+".png",img)
+                #compare_histogram.compare_histograms(time)
             #    image_similarity.compareImages(time+".jpg")
                 between=False
     # loop over the contours

@@ -15,18 +15,27 @@ images = {}
 def compare_histograms(time):
     plt.ioff()
     # loop over the image paths
-    for imagePath in glob.glob("images" + "/*.png"):
+    i = 0
+    for imagePath in glob.glob("images/enter" + "/*.png"):
     # extract the image filename (assumed to be unique) and
     # load the image, updating the images dictionary
+        if(i<1):
+            image = cv2.imread("images/exit/"+time+".png")
+            images[time+".png"] = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            hist = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+            hist = cv2.normalize(hist).flatten()
+            index[time+".png"] = hist
+            i = 1
+        
         filename = imagePath[imagePath.rfind("/") + 1:]
+        print filename
         image = cv2.imread(imagePath)
         images[filename] = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         
     # extract a 3D RGB color histogram from the image,
     # using 8 bins per channel, normalize, and update
     # the index
-        hist = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8],
-            [0, 256, 0, 256, 0, 256])
+        hist = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
         hist = cv2.normalize(hist).flatten()
         
         index[filename] = hist
@@ -59,6 +68,7 @@ def compare_histograms(time):
         # using the method and update the results dictionary
         #if k==time+".jpg":
         #    continue
+        #print k, hist
         d = cv2.compareHist(index[time+".png"], hist, cv2.cv.CV_COMP_INTERSECT)
         results[k] = d
         #plt.plot(hist)
@@ -66,10 +76,10 @@ def compare_histograms(time):
     
     # sort the results
     results = sorted([(v, k) for (k, v) in results.items()], reverse = reverse)
-    print results
-
-    fig = plt.figure("Results: %s, %s" % (methodName, time))
-    fig.suptitle(methodName, fontsize = 20)
+    #print results
+    
+    #fig = plt.figure("Results: %s, %s" % (methodName, time))
+    #fig.suptitle(methodName, fontsize = 20)
     
     bestcorr=0
 
@@ -92,7 +102,7 @@ def compare_histograms(time):
    # print "\n najbolja corr "
    # print bestcorr
 
-    actualimage=cv2.imread("images/" +time+".png")
+    actualimage=cv2.imread("images/exit/" +time+".png")
     
     ax = fig.add_subplot(1, 2, 1)
     plt.imshow(cv2.cvtColor(actualimage, cv2.COLOR_BGR2RGB))
@@ -103,6 +113,6 @@ def compare_histograms(time):
     
     # show the OpenCV methods
     plt.ion()
-    plt.show()
+    plt.show(block=True)
     
     return
