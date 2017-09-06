@@ -11,18 +11,15 @@ def compare_histograms( current_img_name ):
     i = 0
 
     for image_path in glob.glob("images/enter/" + "/*.png"):
-        file_name = image_path[image_path.rfind("/") + 1:]
-        
         if(i<1):
-            #print current_img_name
             image = cv2.imread("images/exit/"+current_img_name)
             images[current_img_name] = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             hist = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
             hist = cv2.normalize(hist).flatten()
             index[current_img_name] = hist
             i = 1
-            continue
-        
+
+        file_name = image_path[image_path.rfind("/") + 1:]
         image = cv2.imread(image_path)
         images[file_name] = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -48,13 +45,14 @@ def compare_histograms( current_img_name ):
     ax.imshow(images[current_img_name])
     plt.axis("off")
     images.pop(current_img_name)
-    total_images = len(images)
     results = sorted([(v, k) for (k, v) in results.items()], reverse = reverse)
 
     for (i, (v, k)) in enumerate(results):
         image_labels.append(k)
         comparison_distribution.append(v)
     
+    print comparison_distribution
+
     fig, ax = plt.subplots()    
     width = 0.75 # the width of the bars 
     ind = np.arange(len(images))  # the x locations for the groups
@@ -69,4 +67,5 @@ def compare_histograms( current_img_name ):
 
     #print comparison_distribution
     plt.show()
+
     return
