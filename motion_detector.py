@@ -91,28 +91,26 @@ while True:
         if cx>242 and cx<253:
             between= True
         if between== True and cx <242:
-                print 'screenshot s desna na lijevo'
+                print 'A person entered!'
                 #time=datetime.datetime.now().strftime("%Y%m%d_%H:%M:%S")
                 time=datetime.datetime.now().strftime("%H:%M:%S")
                 for cnt in cnts:
                     (x, y, w, h) = cv2.boundingRect(cnt)
                     img = masked_image[y:y+h, x:x+w]
-                cv2.imwrite("./images/exit/"+time+".png",img)
-                compare_histogram.compare_histograms(time)
-               # image_similarity.compareImages(time+".jpg")
+                cv2.imwrite("./images/enter/"+time+".png",img)
+                #compare_histogram.compare_histograms(time+".png")
                 between=False
                 
         if cx>242 and cx<254:
             between= True
         if between == True and cx >253:
-                print 'screenshot s lijeva na desno'
+                print 'The person has left!'
                 time=datetime.datetime.now().strftime("%H:%M:%S")
                 for cnt in cnts:
                     (x, y, w, h) = cv2.boundingRect(cnt)
                     img = masked_image[y:y+h, x:x+w]
-                cv2.imwrite("./images/enter/"+time+".png",img)
-                #compare_histogram.compare_histograms(time)
-            #    image_similarity.compareImages(time+".jpg")
+                cv2.imwrite("./images/exit/"+time+".png",img)
+                compare_histogram.compare_histograms(time+".png")
                 between=False
     # loop over the contours
     for c in cnts:

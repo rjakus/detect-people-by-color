@@ -1,7 +1,3 @@
-# USAGE
-# python compare.py --dataset images
-
-# import the necessary packages
 from scipy.spatial import distance as dist
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,110 +5,68 @@ import argparse
 import glob
 import cv2
 
-index = {}
-images = {}
-
-def compare_histograms(time):
-    plt.ioff()
-    # loop over the image paths
+def compare_histograms( current_img_name ):	
+    index = {}
+    images = {}
     i = 0
-    for imagePath in glob.glob("images/enter" + "/*.png"):
-    # extract the image filename (assumed to be unique) and
-    # load the image, updating the images dictionary
+
+    for image_path in glob.glob("images/enter/" + "/*.png"):
+        file_name = image_path[image_path.rfind("/") + 1:]
+        
         if(i<1):
-            image = cv2.imread("images/exit/"+time+".png")
-            images[time+".png"] = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            #print current_img_name
+            image = cv2.imread("images/exit/"+current_img_name)
+            images[current_img_name] = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             hist = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
             hist = cv2.normalize(hist).flatten()
-            index[time+".png"] = hist
+            index[current_img_name] = hist
             i = 1
-        
-        filename = imagePath[imagePath.rfind("/") + 1:]
-        print filename
-        image = cv2.imread(imagePath)
-        images[filename] = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        
-    # extract a 3D RGB color histogram from the image,
-    # using 8 bins per channel, normalize, and update
-    # the index
-        hist = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
-        hist = cv2.normalize(hist).flatten()
-        
-        index[filename] = hist
-    
-    # ako je samo jedna slika u bazi vrati se u program, nema se sta usporedivat    
-    if len(index.items())==1:
-        return
-    
-    # METHOD #1: UTILIZING OPENCV
-    # initialize OpenCV methods for histogram comparison
-    #OPENCV_METHODS = (("Correlation", cv2.cv.CV_COMP_CORREL))
-    OPENCV_METHODS = (
-	("Correlation", cv2.cv.CV_COMP_CORREL),
-	("Chi-Squared", cv2.cv.CV_COMP_CHISQR),
-	("Intersection", cv2.cv.CV_COMP_INTERSECT), 
-	("Hellinger", cv2.cv.CV_COMP_BHATTACHARYYA))
-	
-    methodName="Intersection"
-    # loop over the comparison methods
-    
-    # initialize the results dictionary and the sort
-    # direction
-    results = {}
-    reverse = True
-    
-    
-    # loop over the index
-    for (k, hist) in index.items():
-        # compute the distance between the two histograms
-        # using the method and update the results dictionary
-        #if k==time+".jpg":
-        #    continue
-        #print k, hist
-        d = cv2.compareHist(index[time+".png"], hist, cv2.cv.CV_COMP_INTERSECT)
-        results[k] = d
-        #plt.plot(hist)
-    
-    
-    # sort the results
-    results = sorted([(v, k) for (k, v) in results.items()], reverse = reverse)
-    #print results
-    
-    #fig = plt.figure("Results: %s, %s" % (methodName, time))
-    #fig.suptitle(methodName, fontsize = 20)
-    
-    bestcorr=0
-
-    # loop over the results
-    for (i, (v, k)) in enumerate(results):
-        # show the result
-        #if v>1.5:
-
-        if k==time+".png":
             continue
         
-        if bestcorr<v:
-            bestcorr=v
-            bestcorrpic=k
-            
-    
-    fig = plt.figure("Results: %s, Correlation: %f" % (methodName, bestcorr))
-    fig.suptitle(methodName, fontsize = 20)
-            
-   # print "\n najbolja corr "
-   # print bestcorr
+        image = cv2.imread(image_path)
+        images[file_name] = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    actualimage=cv2.imread("images/exit/" +time+".png")
-    
-    ax = fig.add_subplot(1, 2, 1)
-    plt.imshow(cv2.cvtColor(actualimage, cv2.COLOR_BGR2RGB))
-       
-    ax = fig.add_subplot(1, 2, 2)
-    plt.imshow(images[bestcorrpic])
+        hist = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+        hist = cv2.normalize(hist).flatten()
+        index[file_name] = hist
+
+    results = {}
+    reverse = False
+    total_images = 0
+    comparison_distribution = []
+    image_labels = []
+
+    for (k, hist) in index.items():
+        if(k == current_img_name):
+            continue
+
+        d = cv2.compareHist(index[current_img_name], hist, cv2.cv.CV_COMP_INTERSECT)
+        results[k] = d
+
+    fig = plt.figure("Exit image: " + current_img_name )
+    ax = fig.add_subplot(1, 1, 1)
+    ax.imshow(images[current_img_name])
     plt.axis("off")
+    images.pop(current_img_name)
+    total_images = len(images)
+    results = sorted([(v, k) for (k, v) in results.items()], reverse = reverse)
+
+    for (i, (v, k)) in enumerate(results):
+        image_labels.append(k)
+        comparison_distribution.append(v)
     
-    # show the OpenCV methods
-    plt.ion()
-    plt.show(block=True)
-    
+    fig, ax = plt.subplots()    
+    width = 0.75 # the width of the bars 
+    ind = np.arange(len(images))  # the x locations for the groups
+    ax.barh(ind, comparison_distribution, width, color="blue")
+    ax.set_yticks(ind+width/2)
+    ax.set_yticklabels(image_labels, minor=False)
+    plt.title('Comparing the exiting person with the entering ones')
+    plt.xlabel('Correlation (more correlation = better similarity)')
+    plt.ylabel('Image name')  
+    for i, v in enumerate(comparison_distribution):
+        ax.text(v + 3, i + .25, str(v), color='red', fontweight='bold')
+
+    #print comparison_distribution
+    plt.show()
     return
